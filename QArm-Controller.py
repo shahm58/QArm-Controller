@@ -90,8 +90,8 @@ Return type: Boolean
 Purpose: This function control the operation of the gripper that is located at the end
 of the arm. If both the left and right arm sensor value is equal to zero, then gripper
 open and close. The gripper will open id the effectorOpen varible equal to Flase. The
-gripper will close if the effectorOpen variable is equal to True.This function return True if the initial if statemtne is True
-else it will return False.
+gripper will close if the effectorOpen variable is equal to True.This function return 
+True if the initial if statemtne is True else it will return False.
 
 Author: Muneeb Shah
 Last Update: December 1st, 2020
