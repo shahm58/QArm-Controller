@@ -23,13 +23,6 @@ reset = [0.4064,0.0,0.4826]
 Function: id_autoclavebin_location(parameter)
 Parameter: obj_ID
 Return type: Boolean
-
-Purpose: This function assigns the drop off coordinate to the dropoff_location variable,
-the locations are assigned depending upon the obj_ID which is passes into the
-function as an argument
-
-Author: Muneeb Shah
-Last Update: December 1st, 2020
 '''
 def id_autoclavebin_location(obj_ID):
     if obj_ID == 1: #small red 
@@ -52,15 +45,6 @@ def id_autoclavebin_location(obj_ID):
 Function: move_end_effector(parameter)
 Parameter: obj_ID
 Return type: Boolean
-
-Purpose: This function controls the movement of the arm. If the right arm's sensor
-signal is 1 then the arm will move to the approarite drop off location.
-If the left arm sensor is between 0.5 and 0.75 then the arm will move to
-the pick up location. This function return True if the initial if statemtne is True
-else it will return False.
-
-Author: Jibin Mathew
-Last Update: December 1st, 2020
 '''
 def move_end_effector(obj_ID):
     if  arm.emg_right() == 1:
@@ -86,16 +70,6 @@ def move_end_effector(obj_ID):
 Function: control_gripper(parameter)
 Parameter: effectorOpen
 Return type: Boolean
-
-Purpose: This function control the operation of the gripper that is located at the end
-of the arm. If both the left and right arm sensor value is equal to zero, then gripper
-open and close. The gripper will open id the effectorOpen varible equal to Flase. The
-gripper will close if the effectorOpen variable is equal to True.This function return 
-True if the initial if statemtne is True else it will return False.
-
-Author: Muneeb Shah
-Last Update: December 1st, 2020
-
 '''
 def control_gripper(effectorOpen):
     if arm.emg_left()  == 0 and arm.emg_right() == 0:
@@ -112,19 +86,6 @@ def control_gripper(effectorOpen):
 Function: open_drawer(parameter)
 Parameter: obj_ID
 Return type: Boolean
-
-Purpose: This functuion controls the operation of opening and closing the drawer, if the
-left arm and right arm sensor values are between 0.25 and 0.5 then the code will check
-to see what type of container the arm is dealing with. If it is a small container
-then the drawers will remain closed. If it is big container then the program will
-check to see if the drawer is open or closed, if the drawer is open the obj_ID will be 14,
-15 or 16. Therefore, if obj_ID is equal to 14,15 or 16 the program will close the
-drawer. This function return True if the initial if statemtne is True
-else it will return False.
-
-Author: Jibin Mathew
-Last Update: December 1st, 2020
-
 '''            
 def open_drawer(obj_ID):
     if arm.emg_left() > 0.25 and arm.emg_left() < 0.5 and arm.emg_right() > 0.25 and arm.emg_right() < 0.5:
@@ -151,53 +112,34 @@ def open_drawer(obj_ID):
     else:
         return False
 
-'''
-Purpose:This for loop is like the main function, it calls the functions above in logical
-order to execute different tasks. Each of the above functions are embedded in a
-while loop to force the user to move the arm/arms to the desired value for the specific
-operation. Each of the functions above returns True/False depending on the initial
-if statement in the function. If the returned value is False the loop will continue, and 
-if it is true then the code will exit the loop and move on to the next function.
-If the program is dealing with a large container then the code will set the obj_ID
-equal to the original value + 10 this new obj_ID will be used to close the container
-in the open_drawer function
-
-Author: Jibin Mathew and Muneeb Shah
-Last Update: Decemeber 1st, 2020
-'''
 for i in range (1,7):
-    effectorOpen = True #This variable lets the code know if the gripper is colsed or open.
+    effectorOpen = True 
     arm.home()
     time.sleep(1)
-    arm.spawn_cage(i) #spawn new container be sanitized 
+    arm.spawn_cage(i)
     time.sleep(2)
-    
-    #detecting the required autoclave and open the drawer if container is large
-    while open_drawer(i) == False: #while loops used to force user to move the arm to the correct value
+        
+    while open_drawer(i) == False: 
         open_drawer(i)
         time.sleep(2)
-        print("Finding Autoclave") #This print function will act as a guide to when the user must change the arm's position
+        print("Finding Autoclave") 
 
-    #moving the end effector to pickup location
     while move_end_effector(i) == False: 
         move_end_effector(i)
         time.sleep(2)
         print("Pick up the container")
 
-    #closing the gripper
     while control_gripper(effectorOpen) == False:
         control_gripper(effectorOpen)
         time.sleep(2)
         print("Close the Gripper")
     effectorOpen = False
 
-    #moving arm to required drop off location
     while move_end_effector(i) == False:
         move_end_effector(i)
         time.sleep(2)
         print ("Move to Autoclave")
 
-    #open the gripper
     while control_gripper(effectorOpen) == False:
         control_gripper(effectorOpen)
         time.sleep(2)
@@ -205,9 +147,8 @@ for i in range (1,7):
     time.sleep(2)
     arm.home()
 
-    #closing the drawer is container is large
-    if (i == 4 or i == 5 or i ==6): # The drawers are open at this point 
-        while open_drawer(i+10) == False: #therefore obj_ID is set to i+10
+    if (i == 4 or i == 5 or i ==6): 
+        while open_drawer(i+10) == False: 
             open_drawer(i+10)
             time.sleep(2)
             print("Close the Drawer")
